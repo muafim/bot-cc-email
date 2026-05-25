@@ -1,0 +1,11 @@
+/target
+*.db
+/logs
+
+# Config pribadi (berisi email & pengaturan akun) — jangan di-commit
+cc-email.toml
+cc-email-gmail.toml
+cc-email-gmail-local.toml
+*-local.toml
+
+# Template aman untuk publik: cc-email-gmail.toml.example

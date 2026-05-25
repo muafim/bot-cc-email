@@ -1,0 +1,51 @@
+name: Jalankan Bot cc-email (Gemini)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build cc-email
+        run: cargo build --release
+
+      - name: Buat config dari secrets
+        env:
+          CC_EMAIL_GMAIL_USER: ${{ secrets.CC_EMAIL_GMAIL_USER }}
+          CC_EMAIL_ALLOWED_SENDER: ${{ secrets.CC_EMAIL_ALLOWED_SENDER }}
+        run: |
+          if [ -z "$CC_EMAIL_GMAIL_USER" ] || [ -z "$CC_EMAIL_ALLOWED_SENDER" ]; then
+            echo "Set secrets CC_EMAIL_GMAIL_USER dan CC_EMAIL_ALLOWED_SENDER di repo Settings → Secrets"
+            exit 1
+          fi
+          sed -e "s|YOUR_GMAIL_ADDRESS@example.com|${CC_EMAIL_GMAIL_USER}|g" \
+              -e "s|YOUR_TRUSTED_SENDER@example.com|${CC_EMAIL_ALLOWED_SENDER}|g" \
+              cc-email-gmail.toml.example > cc-email-gmail.toml
+
+      - name: Tes koneksi Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          MODEL="gemini-2.5-flash-lite"
+          curl -sf -X POST \
+            "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"contents":[{"parts":[{"text":"Halo, tes koneksi dari GitHub Actions"}]}]}' \
+            | head -c 500
+          echo ""
+
+      - name: Jalankan cc-email
+        env:
+          CC_EMAIL_GMAIL_PASSWORD: ${{ secrets.CC_EMAIL_GMAIL_PASSWORD }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: timeout 120m ./target/release/cc-email listen --config cc-email-gmail.toml || true

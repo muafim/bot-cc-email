@@ -1,0 +1,28 @@
+[inbox]
+type = "imap"
+host = "imap.gmail.com"
+port = 993
+username = "YOUR_GMAIL_ADDRESS@example.com"
+password_env = "CC_EMAIL_GMAIL_PASSWORD"
+folder = "INBOX"
+poll_interval_seconds = 15
+search_from = ["YOUR_TRUSTED_SENDER@example.com"]
+
+[outbox]
+type = "smtp"
+host = "smtp.gmail.com"
+port = 587
+username = "YOUR_GMAIL_ADDRESS@example.com"
+password_env = "CC_EMAIL_GMAIL_PASSWORD"
+from = "YOUR_GMAIL_ADDRESS@example.com"
+
+[agent]
+type = "gemini"
+api_key_env = "GEMINI_API_KEY"
+model = "gemini-2.5-flash-lite"
+timeout_seconds = 60
+
+[security]
+allowed_senders = ["YOUR_TRUSTED_SENDER@example.com"]
+max_body_bytes = 20000
+max_attachment_bytes = 5000000
