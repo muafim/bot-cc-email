@@ -4,8 +4,6 @@
 
 # cc-email
 
-[![CI](https://github.com/meloalright/cc-email/actions/workflows/ci.yml/badge.svg)](https://github.com/meloalright/cc-email/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-
 Bridge between **email** and **AI agents**. Send a task from your inbox, get the reply by email — no public IP, no webhook server, no self-hosted SMTP.
 
 This fork uses **[Google Gemini](https://ai.google.dev/)** (`gemini-2.5-flash-lite` by default) as the agent backend.
@@ -198,6 +196,4 @@ Any **IMAP + SMTP** provider works. Adjust `host`, `port`, and credentials in a 
 
 Inspired by [cc-connect](https://github.com/chenhg5/cc-connect).
 
-## License
 
-MIT
